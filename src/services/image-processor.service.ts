@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as path from 'path';
 import * as ExifParser from 'exif-parser';
-import { General } from 'src/contants';
+import { General } from '../contants';
 import { ImageProcessPresenterType } from 'src/image-processor.presenter';
 import { ImageReader } from './protocols/image-reader';
 import { MongoConnect } from './protocols/mongo';
