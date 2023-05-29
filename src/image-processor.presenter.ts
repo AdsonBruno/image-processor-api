@@ -1,5 +1,4 @@
 import { General } from './contants';
-import { Result } from './models/result.model';
 
 export type ImageProcessPresenterType = {
   originalUrl: string;

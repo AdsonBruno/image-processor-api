@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { MongoClientAdapter } from 'src/gateways/adapters/mongo-connect.adapter';
 import { MongoConnect } from './protocols/mongo';
 
 @Injectable()

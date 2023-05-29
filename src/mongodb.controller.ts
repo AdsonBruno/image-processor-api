@@ -8,7 +8,5 @@ export class ConnectedController {
   @Get('connect')
   async connectToMongoDb() {
     await this.mongoAdapterService.connect();
-    console.log('conectou, ihuu');
-    // return 'Connected to mongooooo';
   }
 }
