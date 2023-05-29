@@ -28,4 +28,14 @@ export class MongoClientAdapter extends MongoConnect {
     const result = await collection.insertOne(data);
     return result;
   }
+
+  public async getdata(collectionName: string): Promise<any> {
+    if (!this.client || !this.db) {
+      throw new Error('MongoDB connection not estabilished');
+    }
+
+    const collection = this.db.collection(collectionName);
+    const data = await collection.findOne();
+    return data;
+  }
 }
