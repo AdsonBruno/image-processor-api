@@ -1,43 +1,51 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# API para download de imagens e acesso a metadados do arquivo exif
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Descrição
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Esta API tem como objetivo receber uma URL publica de uma imagem e em seguida fazer o download da imagem e salvar no sistema de arquivos, a imagem deve ter no máximo 720px e se for menor só irá salvar uma cópia da imagem. No nome da imagem deve ser salvo com o sufixo \_thumb. Além disso será salvo os metadados das imagens no mongodb
 
-## Description
+## Tecnologias utilizadas
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- NodeJs
+- TypeScript
+- Nest.Js
+- Jimp
+- Exif Parser
+- Prettier/Eslint
+- MongoDB
+- Mongoose
+- Docker
 
-## Installation
+## Instalação das dependências
+
+Modificar o arquivo `docker-compose.yml` com os dados de sua preferência e subir o banco com o comando:
 
 ```bash
+$ docker-compose up -d
+```
+
+```yml
+version: '3.7'
+services:
+  mongodb_container:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data_container:/data/db
+
+volumes:
+  mongodb_data_container:
+```
+
+```bash
+# Instalando as dependências
 $ npm install
 ```
 
-## Running the app
+## Executando a aplicação
 
 ```bash
-# development
-$ npm run start
-
 # watch mode
 $ npm run start:dev
 
@@ -58,16 +66,82 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Support
+### Endpoints:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+A aplicação possui apenas um endpoint
 
-## Stay in touch
+Endpoint base da aplicação: `http://localhost:3000`
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### `POST` -> `http://localhost:3000/image/save`
 
-## License
+Realizar download e acesso aos metadados
 
-Nest is [MIT licensed](LICENSE).
+```json
+{
+  "image": "https://assets.storage.trakto.io/AkpvCuxXGMf3npYXajyEZ8A2APn2/0e406885-9d03-4c72-bd92-c6411fbe5c49.jpeg",
+  "compress": 0.9
+}
+```
+
+Response
+
+```json
+{
+  "localpath": {
+    "original": "https://assets.storage.trakto.io/AkpvCuxXGMf3npYXajyEZ8A2APn2/0e406885-9d03-4c72-bd92-c6411fbe5c49.jpeg",
+    "thumb": "./images/./images/0e406885-9d03-4c72-bd92-c6411fbe5c49_thumb.png"
+  },
+  "metadata": {
+    "Make": "Apple",
+    "Model": "iPhone 11",
+    "Orientation": 1,
+    "XResolution": 72,
+    "YResolution": 72,
+    "ResolutionUnit": 2,
+    "Software": "16.1.1",
+    "ModifyDate": 1668716039,
+    "HostComputer": "iPhone 11",
+    "TileWidth": 512,
+    "TileLength": 512,
+    "GPSLatitudeRef": "S",
+    "GPSLatitude": -9.613122222222222,
+    "GPSLongitudeRef": "W",
+    "GPSLongitude": -35.7252,
+    "GPSAltitudeRef": 0,
+    "GPSAltitude": 56.46832101372756,
+    "GPSSpeedRef": "K",
+    "GPSSpeed": 0.2655744302651217,
+    "GPSImgDirectionRef": "T",
+    "GPSImgDirection": 162.76583850931678,
+    "GPSDestBearingRef": "T",
+    "GPSDestBearing": 162.76583850931678,
+    "GPSHPositioningError": 7.849353822413682,
+    "ExposureTime": 0.023809523809523808,
+    "FNumber": 1.8,
+    "ExposureProgram": 2,
+    "ISO": 320,
+    "DateTimeOriginal": 1668716039,
+    "CreateDate": 1668716039,
+    "undefined": "-03:00",
+    "ShutterSpeedValue": 5.381182507010322,
+    "ApertureValue": 1.6959938128383605,
+    "BrightnessValue": -0.6750610904449875,
+    "ExposureCompensation": -1.3275746571237175,
+    "MeteringMode": 5,
+    "Flash": 16,
+    "FocalLength": 4.25,
+    "SubjectArea": [1996, 1499, 2206, 1387],
+    "SubSecTimeOriginal": "890",
+    "SubSecTimeDigitized": "890",
+    "ExifImageWidth": 3024,
+    "ExifImageHeight": 4032,
+    "SensingMethod": 2,
+    "ExposureMode": 0,
+    "WhiteBalance": 0,
+    "FocalLengthIn35mmFormat": 26,
+    "LensInfo": [1.5399999618512084, 4.25, 1.8, 2.4],
+    "LensMake": "Apple",
+    "LensModel": "iPhone 11 back dual wide camera 4.25mm f/1.8"
+  }
+}
+```
