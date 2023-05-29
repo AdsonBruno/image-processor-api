@@ -51,18 +51,21 @@ import * as ExifParser from 'exif-parser';
 import { General } from 'src/contants';
 import { ImageProcessPresenterType } from 'src/image-processor.presenter';
 import { ImageReader } from './protocols/image-reader';
+import { MongoClientAdapter } from 'src/gateways/adapters/mongo-connect.adapter';
+import { MongoConnect } from './protocols/mongo';
 
 @Injectable()
 export class ImageProcessorService {
-  constructor(private readonly imageReaderAdapter: ImageReader) {}
+  constructor(
+    private readonly imageReaderAdapter: ImageReader,
+    private readonly mongoClientAdapter: MongoConnect,
+  ) {}
   async processImage(url: string): Promise<any> {
     const imageName = path.basename(url);
     const thumbnailName = this.generateThumbnailName(imageName);
 
     try {
       const image = await this.imageReaderAdapter.reader(url);
-      const originalImageSize = image.getHeight();
-      console.log('tamanho original', originalImageSize);
       if (image.getHeight() > 720) {
         image.resize(720, 720);
       }

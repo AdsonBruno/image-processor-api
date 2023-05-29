@@ -4,10 +4,17 @@ import { ImageProcessorController } from './image-processor.controller';
 import { AdaptersModule } from './gateways/adapters/adapaters.module';
 import { ImageReaderAdapter } from './gateways/adapters/image-reader.adapter';
 import { ImageReader } from './services/protocols/image-reader';
+import { MongoClientAdapter } from './gateways/adapters/mongo-connect.adapter';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ConnectedController } from './mongodb.controller';
+import { MongoAdapterService } from './services/mongo.adapter.service';
 
 @Module({
-  imports: [AdaptersModule],
-  controllers: [ImageProcessorController],
-  providers: [ImageProcessorService],
+  imports: [
+    AdaptersModule,
+    MongooseModule.forRoot('mongodb://localhost:27017'),
+  ],
+  controllers: [ImageProcessorController, ConnectedController],
+  providers: [ImageProcessorService, MongoClientAdapter, MongoAdapterService],
 })
 export class AppModule {}
