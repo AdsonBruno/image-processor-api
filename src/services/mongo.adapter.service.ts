@@ -6,8 +6,6 @@ import { MongoConnect } from './protocols/mongo';
 export class MongoAdapterService {
   constructor(private readonly mongoAdapter: MongoConnect) {}
   async connect() {
-    // const mongoAdapter = new MongoClientAdapter();
-    // await mongoAdapter.connect();
     await this.mongoAdapter.connect();
   }
 }

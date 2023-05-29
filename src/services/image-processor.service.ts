@@ -77,6 +77,11 @@ export class ImageProcessorService {
       const parser = (ExifParser as any).create(buffer);
 
       const result = parser.parse().tags;
+      const saveData = await this.mongoClientAdapter.saveData(
+        'exifdata-db',
+        result,
+      );
+
       return {
         originalUrl: url,
         exifMetaInfo: result,
